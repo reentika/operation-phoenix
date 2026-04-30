@@ -896,13 +896,22 @@ function renderReminders() {
 
 async function sendNotif(title, message) {
   if (!ntfyTopic) return;
+
+  const url = `https://ntfy.sh/${ntfyTopic}?title=${encodeURIComponent(title)}`;
+
   try {
-    await fetch(`https://ntfy.sh/${ntfyTopic}`, {
+    const res = await fetch(url, {
       method: 'POST',
-      headers: { 'Title': title, 'Content-Type': 'text/plain' },
       body: message
     });
-  } catch(e) { console.log('ntfy error', e); }
+
+    if (!res.ok) {
+      alert('Notification failed: ' + res.status);
+    }
+  } catch (e) {
+    console.log('ntfy error', e);
+    alert('Notification failed. Check console.');
+  }
 }
 
 function sendTestNotif() {
