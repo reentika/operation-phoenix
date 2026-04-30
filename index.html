@@ -958,6 +958,8 @@ async function scheduleReminders() {
     await sendScheduledNotif('🥜 Snack time', 'Keep it light — snack time.', '3pm');
     await sendScheduledNotif('🌅 Light dinner', 'Wind down with a light dinner.', '7pm');
     await sendScheduledNotif('🚶 Evening walk', 'Time for your evening walk.', '8pm');
+    // check
+    await sendScheduledNotif('TEST 2', 'Should arrive in 2 min', '2m');
 
     for (let h = 9; h <= 19; h++) {
       await sendScheduledNotif('💧 Drink water', 'Hydration check — sip some water.', `${h}:00`);
