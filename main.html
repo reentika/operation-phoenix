@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Fitness">
+<title>My Fitness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --bg2: #161616;
+    --bg3: #1f1f1f;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0ede6;
+    --muted: #888;
+    --accent: #c8f55a;
+    --accent-dim: rgba(200,245,90,0.12);
+    --accent-border: rgba(200,245,90,0.3);
+    --red: #ff6b6b;
+    --orange: #ffb347;
+    --blue: #6bc5ff;
+    --purple: #b39ddb;
+    --green: #c8f55a;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden;
+    padding-bottom: 90px;
+  }
+
+  h1, h2, .serif { font-family: 'DM Serif Display', serif; }
+
+  .header {
+    padding: 56px 20px 20px;
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .header h1 { font-size: 28px; color: var(--text); font-weight: 400; }
+  .header .date { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .ntfy-badge {
+    font-size: 11px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 24px;
+    z-index: 200;
+  }
+
+  .nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: color 0.2s;
+  }
+
+  .nav-btn.active { color: var(--accent); }
+  .nav-icon { font-size: 20px; }
+
+  .page { display: none; padding: 20px; }
+  .page.active { display: block; }
+
+  /* --- WORKOUT DAY CARD --- */
+  .day-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .day-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .day-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .day-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 16px 0 8px;
+  }
+
+  .exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+  }
+
+  .exercise-item.done {
+    border-color: var(--accent-border);
+    background: var(--accent-dim);
+  }
+
+  .ex-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .exercise-item.done .ex-check {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .ex-check-icon { display: none; font-size: 12px; }
+  .exercise-item.done .ex-check-icon { display: block; }
+
+  .ex-name { font-size: 14px; font-weight: 400; }
+  .exercise-item.done .ex-name { text-decoration: line-through; color: var(--muted); }
+
+  .day-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  .day-nav::-webkit-scrollbar { display: none; }
+
+  .day-chip {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .day-chip.active {
+    background: var(--accent);
+    color: #0d0d0d;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .rest-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 20px;
+    text-align: center;
+  }
+
+  .rest-card .rest-emoji { font-size: 36px; margin-bottom: 12px; }
+  .rest-card h2 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 8px; }
+  .rest-card p { color: var(--muted); font-size: 14px; }
+
+  .progress-bar-wrap {
+    background: var(--bg3);
+    border-radius: 4px;
+    height: 4px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  /* --- LOG PAGE --- */
+  .log-section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .log-section-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .log-section-header h3 {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .log-icon { font-size: 16px; }
+
+  .add-btn {
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .log-entries { padding: 8px 16px 12px; }
+
+  .log-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .log-entry:last-child { border-bottom: none; }
+
+  .log-entry-text { color: var(--text); }
+  .log-entry-meta { color: var(--muted); font-size: 11px; }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 4px;
+  }
+
+  .water-tracker {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 12px 16px;
+  }
+
+  .water-glass {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .water-glass.filled {
+    background: rgba(107,197,255,0.15);
+    border-color: rgba(107,197,255,0.4);
+  }
+
+  .water-count {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 0 16px 12px;
+  }
+
+  /* --- REMINDERS PAGE --- */
+  .reminder-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .reminder-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .reminder-row:last-child { border-bottom: none; }
+
+  .reminder-time {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    min-width: 60px;
+  }
+
+  .reminder-info { flex: 1; }
+  .reminder-label { font-size: 13px; font-weight: 500; }
+  .reminder-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  .reminder-icon-box {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* --- MODAL / INPUT --- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.hidden { display: none; }
+
+  .modal-sheet {
+    background: var(--bg2);
+    border-radius: 20px 20px 0 0;
+    padding: 20px 20px 40px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .modal-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 12px;
+  }
+
+  .modal-input:focus { border-color: var(--accent); }
+
+  .modal-actions { display: flex; gap: 10px; }
+
+  .btn {
+    flex: 1;
+    padding: 13px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+  }
+
+  .btn-primary { background: var(--accent); color: #0d0d0d; }
+  .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); }
+
+  /* --- NTFY SETUP --- */
+  .setup-card {
+    background: var(--bg2);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .setup-card h3 { font-family: 'DM Serif Display', serif; font-size: 18px; margin-bottom: 8px; }
+  .setup-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+
+  .setup-steps { list-style: none; }
+  .setup-steps li {
+    font-size: 13px;
+    color: var(--text);
+    padding: 6px 0;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    min-width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0d0d0d;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .topic-display {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: monospace;
+    color: var(--accent);
+    margin: 10px 0;
+    word-break: break-all;
+  }
+
+  .small-link {
+    color: var(--accent);
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1 class="serif">Good morning ✦</h1>
+      <div class="date" id="dateLabel"></div>
+    </div>
+    <div class="ntfy-badge" onclick="showPage('reminders')">🔔 Reminders</div>
+  </div>
+</div>
+
+<div class="page active" id="page-workout">
+  <div class="day-nav" id="dayNav"></div>
+  <div id="workoutContent"></div>
+</div>
+
+<div class="page" id="page-log">
+  <!-- Food Log -->
+  <div class="log-section">
+    <div class="log-section-header">
+      <h3><span class="log-icon">🍽️</span> Food log</h3>
+      <button class="add-btn" onclick="openModal('food')">+ Add</button>
+    </div>
+    <div class="log-entries" id="foodEntries">
+      <div style="font-size:13px;color:var(--muted);padding:8px 0;">Nothing logged yet today.</div>
+    </div>
+  </div>
+
+  <!-- Water Log -->
+  <div class="log-section">
+    <div class="log-section-header">
+      <h3><span class="log-icon">💧</span> Water</h3>
+      <button class="add-btn" onclick="addWater()">+ Glass</button>
+    </div>
+    <div class="water-tracker" id="waterTracker"></div>
+    <div class="water-count" id="waterCount">0 glasses today</div>
+  </div>
+
+  <!-- Walk log -->
+  <div class="log-section">
+    <div class="log-section-header">
+      <h3><span class="log-icon">🚶</span> Walk</h3>
+      <button class="add-btn" onclick="openModal('walk')">+ Log</button>
+    </div>
+    <div class="log-entries" id="walkEntries">
+      <div style="font-size:13px;color:var(--muted);padding:8px 0;">No walks logged today.</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-reminders">
+  <div id="ntfySetup"></div>
+
+  <p class="section-label">Today's schedule</p>
+  <div class="reminder-card">
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(255,179,71,0.15)">🍗</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Protein meal</div>
+        <div class="reminder-sub">Lunch — high protein focus</div>
+      </div>
+      <div class="reminder-time">1:00 PM</div>
+    </div>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(200,245,90,0.1)">🥜</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Snack time</div>
+        <div class="reminder-sub">Keep it light</div>
+      </div>
+      <div class="reminder-time">3:00 PM</div>
+    </div>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(107,197,255,0.12)">💧</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Water reminders</div>
+        <div class="reminder-sub">Hourly, 9am – 8pm</div>
+      </div>
+      <div class="reminder-time">Hourly</div>
+    </div>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(179,157,219,0.15)">🌅</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Light dinner</div>
+        <div class="reminder-sub">Wind-down eating</div>
+      </div>
+      <div class="reminder-time">7:00 PM</div>
+    </div>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(200,245,90,0.1)">🚶</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Evening walk</div>
+        <div class="reminder-sub">After dinner walk</div>
+      </div>
+      <div class="reminder-time">8:00 PM</div>
+    </div>
+  </div>
+
+  <div id="testNotifSection"></div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('workout')" id="nav-workout">
+    <span class="nav-icon">💪</span>Workout
+  </button>
+  <button class="nav-btn" onclick="showPage('log')" id="nav-log">
+    <span class="nav-icon">📋</span>Log
+  </button>
+  <button class="nav-btn" onclick="showPage('reminders')" id="nav-reminders">
+    <span class="nav-icon">🔔</span>Reminders
+  </button>
+</nav>
+
+<!-- Modal -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">Log food</div>
+    <input class="modal-input" id="modalInput" type="text" placeholder="e.g. Chicken & rice..." />
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLog()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const today = new Date();
+const todayIdx = today.getDay();
+
+document.getElementById('dateLabel').textContent = today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+
+const SCHEDULE = {
+  1: {
+    label: 'Monday — Lower Body',
+    color: '#ff6b6b',
+    time: '7 AM (fasted)',
+    sections: [
+      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups','Pull-ups'] },
+      { name: 'Main', exercises: ['Barbell hip thrust','RDL','Bulgarian split squat','Hip abductor'] },
+      { name: 'Core (belly focus)', exercises: ['Hanging leg raises','Cable crunch'] },
+      { name: 'Arms (light)', exercises: ['Tricep pushdowns or kickbacks','Lateral raises'] }
+    ]
+  },
+  2: {
+    label: 'Tuesday — Cardio + Core',
+    color: '#ffcc44',
+    time: 'Flexible',
+    sections: [
+      { name: 'Cardio (pick one)', exercises: ['20–25 min run (easy pace)','Incline walking'] },
+      { name: 'Core circuit', exercises: ['Hanging leg raises','Plank','Cable crunch'] }
+    ]
+  },
+  3: {
+    label: 'Wednesday — Upper Body',
+    color: '#6bc5ff',
+    time: '7 AM',
+    sections: [
+      { name: 'Start', exercises: ['BOSU leg-ups','Pull-ups'] },
+      { name: 'Back + Push', exercises: ['Lat pulldown','Chest-supported DB row','Incline DB press','Single-arm lat row'] },
+      { name: '🔥 Arms (main focus)', exercises: ['Preacher curl','Tricep kickbacks','Overhead tricep extension','Lateral raises'] },
+      { name: 'Finish', exercises: ['Dead hang'] }
+    ]
+  },
+  4: {
+    label: 'Thursday — Fat Loss Day',
+    color: '#c8f55a',
+    time: 'Flexible',
+    sections: [
+      { name: 'Intervals (pick one)', exercises: ['1 min fast / 2 min walk × 6–8 rounds','30–40 min incline walk'] }
+    ]
+  },
+  5: {
+    label: 'Friday — Lower Body (Quads)',
+    color: '#b39ddb',
+    time: '7 AM',
+    sections: [
+      { name: 'Start', exercises: ['BOSU leg-ups','Pull-ups'] },
+      { name: 'Main', exercises: ['Hack squat','DB walking lunges','Hip thrust','Leg extension','Hip adductor'] },
+      { name: 'Core', exercises: ['Cable crunch','Hanging leg raises'] },
+      { name: 'Arms (light)', exercises: ['Tricep pushdowns','Lateral raises'] }
+    ]
+  },
+  6: {
+    label: 'Saturday — Active + Pilates',
+    color: '#ffb347',
+    time: 'Flexible',
+    sections: [
+      { name: 'Activity', exercises: ['Long walk','Light run','Pilates / YouTube workout (optional)'] }
+    ]
+  },
+  0: {
+    label: 'Sunday — Rest & Reset',
+    color: '#888',
+    time: 'All day',
+    rest: true,
+    sections: [
+      { name: 'Gentle movement', exercises: ['Walk','Stretch'] }
+    ]
+  }
+};
+
+let currentDay = todayIdx;
+let checkedExercises = JSON.parse(localStorage.getItem('checked') || '{}');
+let foodLog = JSON.parse(localStorage.getItem('foodLog') || '[]');
+let waterLog = JSON.parse(localStorage.getItem('waterLog') || '{}');
+let walkLog = JSON.parse(localStorage.getItem('walkLog') || '[]');
+let ntfyTopic = localStorage.getItem('ntfyTopic') || '';
+let currentModal = '';
+
+const todayKey = today.toISOString().split('T')[0];
+
+function saveChecked() { localStorage.setItem('checked', JSON.stringify(checkedExercises)); }
+
+function renderDayNav() {
+  const nav = document.getElementById('dayNav');
+  nav.innerHTML = '';
+  const order = [1,2,3,4,5,6,0];
+  order.forEach(d => {
+    const chip = document.createElement('button');
+    chip.className = 'day-chip' + (d === currentDay ? ' active' : '');
+    chip.textContent = DAYS[d].slice(0,3);
+    chip.onclick = () => { currentDay = d; renderDayNav(); renderWorkout(); };
+    nav.appendChild(chip);
+  });
+}
+
+function renderWorkout() {
+  const content = document.getElementById('workoutContent');
+  const day = SCHEDULE[currentDay];
+  if (!day) { content.innerHTML = ''; return; }
+
+  let html = `<div class="day-label">
+    <div class="day-dot" style="background:${day.color}"></div>
+    <div>
+      <div class="day-title">${day.label.split('—')[1]?.trim() || day.label}</div>
+      <div class="day-subtitle">⏰ ${day.time}</div>
+    </div>
+  </div>`;
+
+  if (day.rest) {
+    html += `<div class="rest-card">
+      <div class="rest-emoji">🌿</div>
+      <h2>Rest & Reset</h2>
+      <p>Walk + stretch. Recovery is part of the process.</p>
+    </div>`;
+  }
+
+  const dayKey = `${todayKey}-${currentDay}`;
+  let total = 0, done = 0;
+
+  day.sections.forEach(sec => {
+    html += `<div class="section-label">${sec.name}</div>`;
+    sec.exercises.forEach(ex => {
+      total++;
+      const key = `${dayKey}-${ex}`;
+      const checked = checkedExercises[key];
+      if (checked) done++;
+      html += `<div class="exercise-item${checked ? ' done' : ''}" onclick="toggleEx('${key}', this)">
+        <div class="ex-check"><span class="ex-check-icon">✓</span></div>
+        <div class="ex-name">${ex}</div>
+      </div>`;
+    });
+  });
+
+  const pct = total > 0 ? Math.round((done/total)*100) : 0;
+  html += `<div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+  <div class="progress-label">${done} of ${total} exercises done (${pct}%)</div>`;
+
+  content.innerHTML = html;
+}
+
+function toggleEx(key, el) {
+  checkedExercises[key] = !checkedExercises[key];
+  saveChecked();
+  renderWorkout();
+}
+
+function renderLog() {
+  const todayFood = foodLog.filter(f => f.date === todayKey);
+  const foodEl = document.getElementById('foodEntries');
+  if (todayFood.length === 0) {
+    foodEl.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:8px 0;">Nothing logged yet today.</div>';
+  } else {
+    foodEl.innerHTML = todayFood.map((f,i) => `
+      <div class="log-entry">
+        <div>
+          <div class="log-entry-text">${f.text}</div>
+          <div class="log-entry-meta">${f.time}</div>
+        </div>
+        <button class="delete-btn" onclick="deleteFood(${foodLog.indexOf(f)})">✕</button>
+      </div>`).join('');
+  }
+
+  const glasses = waterLog[todayKey] || 0;
+  const tracker = document.getElementById('waterTracker');
+  let glassHTML = '';
+  for (let i = 0; i < 10; i++) {
+    glassHTML += `<div class="water-glass${i < glasses ? ' filled' : ''}" onclick="setWater(${i+1})">💧</div>`;
+  }
+  tracker.innerHTML = glassHTML;
+  document.getElementById('waterCount').textContent = `${glasses} glass${glasses !== 1 ? 'es' : ''} today (goal: 8–10)`;
+
+  const todayWalk = walkLog.filter(w => w.date === todayKey);
+  const walkEl = document.getElementById('walkEntries');
+  if (todayWalk.length === 0) {
+    walkEl.innerHTML = '<div style="font-size:13px;color:var(--muted);padding:8px 0;">No walks logged today.</div>';
+  } else {
+    walkEl.innerHTML = todayWalk.map(w => `
+      <div class="log-entry">
+        <div>
+          <div class="log-entry-text">${w.text}</div>
+          <div class="log-entry-meta">${w.time}</div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function addWater() {
+  const cur = waterLog[todayKey] || 0;
+  waterLog[todayKey] = Math.min(cur + 1, 10);
+  localStorage.setItem('waterLog', JSON.stringify(waterLog));
+  renderLog();
+}
+
+function setWater(n) {
+  waterLog[todayKey] = n;
+  localStorage.setItem('waterLog', JSON.stringify(waterLog));
+  renderLog();
+}
+
+function deleteFood(idx) {
+  foodLog.splice(idx, 1);
+  localStorage.setItem('foodLog', JSON.stringify(foodLog));
+  renderLog();
+}
+
+function openModal(type) {
+  currentModal = type;
+  const titles = { food: 'Log food', walk: 'Log walk' };
+  const placeholders = { food: 'e.g. Chicken & rice, protein shake...', walk: 'e.g. 30 min evening walk...' };
+  document.getElementById('modalTitle').textContent = titles[type];
+  document.getElementById('modalInput').placeholder = placeholders[type];
+  document.getElementById('modalInput').value = '';
+  document.getElementById('modalOverlay').classList.remove('hidden');
+  setTimeout(() => document.getElementById('modalInput').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.add('hidden');
+}
+
+function saveLog() {
+  const val = document.getElementById('modalInput').value.trim();
+  if (!val) return;
+  const entry = { text: val, date: todayKey, time: new Date().toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'}) };
+  if (currentModal === 'food') {
+    foodLog.push(entry);
+    localStorage.setItem('foodLog', JSON.stringify(foodLog));
+  } else {
+    walkLog.push(entry);
+    localStorage.setItem('walkLog', JSON.stringify(walkLog));
+  }
+  closeModal();
+  renderLog();
+}
+
+function generateTopic() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = 'myfitness-';
+  for (let i = 0; i < 8; i++) result += chars[Math.floor(Math.random()*chars.length)];
+  return result;
+}
+
+function renderReminders() {
+  const setup = document.getElementById('ntfySetup');
+  if (!ntfyTopic) {
+    ntfyTopic = generateTopic();
+    localStorage.setItem('ntfyTopic', ntfyTopic);
+  }
+
+  setup.innerHTML = `<div class="setup-card">
+    <h3>Set up push notifications</h3>
+    <p>Install the free <strong>ntfy</strong> app on your iPhone, then subscribe to your personal topic below. You'll get all your reminders as real push notifications.</p>
+    <ol class="setup-steps">
+      <li><span class="step-num">1</span><span>Download <strong>ntfy</strong> from the App Store (free, by Philipp Heckel)</span></li>
+      <li><span class="step-num">2</span><span>Open ntfy → tap <strong>+</strong> → Subscribe to topic:</span></li>
+    </ol>
+    <div class="topic-display">${ntfyTopic}</div>
+    <ol class="setup-steps" start="3">
+      <li><span class="step-num">3</span><span>Add this page to your iPhone home screen (Share → Add to Home Screen)</span></li>
+      <li><span class="step-num">4</span><span>Done! Test it below 👇</span></li>
+    </ol>
+  </div>`;
+
+  document.getElementById('testNotifSection').innerHTML = `
+    <div style="margin-top:16px">
+      <p class="section-label">Test your notifications</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn btn-primary" onclick="sendTestNotif()">Send test notification</button>
+        <button class="btn btn-secondary" onclick="scheduleReminders()">Activate all reminders</button>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;">Reminders run while this app is open or in the background as a PWA. For all-day reliability, keep the PWA installed on your home screen.</p>
+    </div>`;
+}
+
+async function sendNotif(title, message) {
+  if (!ntfyTopic) return;
+  try {
+    await fetch(`https://ntfy.sh/${ntfyTopic}`, {
+      method: 'POST',
+      headers: { 'Title': title, 'Content-Type': 'text/plain' },
+      body: message
+    });
+  } catch(e) { console.log('ntfy error', e); }
+}
+
+function sendTestNotif() {
+  sendNotif('My Fitness ✦', 'Notifications are working! Your reminders are set up correctly 💪');
+  alert('Test sent! Check your ntfy app.');
+}
+
+let reminderIntervals = [];
+
+function scheduleReminders() {
+  reminderIntervals.forEach(id => clearInterval(id));
+  reminderIntervals = [];
+
+  function checkTime(h, m, cb) {
+    const interval = setInterval(() => {
+      const now = new Date();
+      if (now.getHours() === h && now.getMinutes() === m && now.getSeconds() < 10) cb();
+    }, 8000);
+    reminderIntervals.push(interval);
+  }
+
+  checkTime(13, 0, () => sendNotif('🍗 Protein meal time!', 'Time for your 1pm protein meal. Fuel those muscles!'));
+  checkTime(15, 0, () => sendNotif('🥜 Snack time', 'Keep it light — a healthy snack at 3pm.'));
+  checkTime(19, 0, () => sendNotif('🌅 Light dinner', 'Wind down with a light dinner. Last meal of the eating window!'));
+  checkTime(20, 0, () => sendNotif('🚶 Evening walk time!', "It's 8pm — time for your walk. You've got this!"));
+
+  for (let h = 9; h <= 19; h++) {
+    checkTime(h, 0, () => sendNotif('💧 Drink water', 'Hydration check! Sip some water.'));
+  }
+
+  alert('Reminders activated! Keep this app open in the background for them to fire.');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'log') renderLog();
+  if (name === 'reminders') renderReminders();
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+document.getElementById('modalInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') saveLog();
+});
+
+renderDayNav();
+renderWorkout();
+</script>
+</body>
+</html>
