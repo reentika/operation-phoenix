@@ -914,9 +914,22 @@ async function sendNotif(title, message) {
   }
 }
 
-function sendTestNotif() {
-  sendNotif('My Fitness ✦', 'Notifications are working! Your reminders are set up correctly 💪');
-  alert('Test sent! Check your ntfy app.');
+async function sendTestNotif() {
+  const topic = localStorage.getItem('ntfyTopic');
+
+  alert('Sending to topic: ' + topic);
+
+  try {
+    const res = await fetch('https://ntfy.sh/' + topic, {
+      method: 'POST',
+      body: 'Hello from my fitness website'
+    });
+
+    alert('Status: ' + res.status);
+  } catch (err) {
+    alert('Error: ' + err.message);
+    console.log(err);
+  }
 }
 
 let reminderIntervals = [];
