@@ -934,28 +934,40 @@ async function sendTestNotif() {
 
 let reminderIntervals = [];
 
-function scheduleReminders() {
-  reminderIntervals.forEach(id => clearInterval(id));
-  reminderIntervals = [];
+async function sendScheduledNotif(title, message, delay) {
+  if (!ntfyTopic) return;
 
-  function checkTime(h, m, cb) {
-    const interval = setInterval(() => {
-      const now = new Date();
-      if (now.getHours() === h && now.getMinutes() === m && now.getSeconds() < 10) cb();
-    }, 8000);
-    reminderIntervals.push(interval);
+  const url =
+    `https://ntfy.sh/${ntfyTopic}` +
+    `?title=${encodeURIComponent(title)}` +
+    `&delay=${encodeURIComponent(delay)}`;
+
+  const res = await fetch(url, {
+    method: 'POST',
+    body: message
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed: ' + res.status);
   }
+}
 
-  checkTime(13, 0, () => sendNotif('🍗 Protein meal time!', 'Time for your 1pm protein meal. Fuel those muscles!'));
-  checkTime(15, 0, () => sendNotif('🥜 Snack time', 'Keep it light — a healthy snack at 3pm.'));
-  checkTime(19, 0, () => sendNotif('🌅 Light dinner', 'Wind down with a light dinner. Last meal of the eating window!'));
-  checkTime(20, 0, () => sendNotif('🚶 Evening walk time!', "It's 8pm — time for your walk. You've got this!"));
+async function scheduleReminders() {
+  try {
+    await sendScheduledNotif('🍗 Protein meal', 'Time for your 1pm protein meal.', '1pm');
+    await sendScheduledNotif('🥜 Snack time', 'Keep it light — snack time.', '3pm');
+    await sendScheduledNotif('🌅 Light dinner', 'Wind down with a light dinner.', '7pm');
+    await sendScheduledNotif('🚶 Evening walk', 'Time for your evening walk.', '8pm');
 
-  for (let h = 9; h <= 19; h++) {
-    checkTime(h, 0, () => sendNotif('💧 Drink water', 'Hydration check! Sip some water.'));
+    for (let h = 9; h <= 19; h++) {
+      await sendScheduledNotif('💧 Drink water', 'Hydration check — sip some water.', `${h}:00`);
+    }
+
+    alert('Reminders scheduled with ntfy! You can close the app now.');
+  } catch (err) {
+    alert('Could not schedule reminders: ' + err.message);
+    console.log(err);
   }
-
-  alert('Reminders activated! Keep this app open in the background for them to fire.');
 }
 
 function showPage(name) {
