@@ -1,150 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="My Fitness">
-  <title>My Fitness</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="My Fitness">
+<title>My Fitness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
 </head>
 <body>
 
-  <!-- ===================== HEADER ===================== -->
-  <div class="header">
-    <div class="header-top">
-      <div>
-        <h1 class="serif">Good morning ✦</h1>
-        <div class="date" id="dateLabel"></div>
-      </div>
-      <div class="ntfy-badge" onclick="showPage('reminders')">🔔 Reminders</div>
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1 class="serif">Good morning ✦</h1>
+      <div class="date" id="dateLabel"></div>
+    </div>
+    <div class="ntfy-badge" onclick="showPage('reminders')">🔔 Reminders</div>
+  </div>
+</div>
+
+<div class="page active" id="page-workout">
+  <div class="day-nav" id="dayNav"></div>
+  <div id="workoutContent"></div>
+</div>
+
+<div class="page" id="page-log">
+  <!-- Food Log -->
+  <div class="log-section">
+    <div class="log-section-header">
+      <h3><span class="log-icon">🍽️</span> Food log</h3>
+      <button class="add-btn" onclick="openModal('food')">+ Add</button>
+    </div>
+    <div class="log-entries" id="foodEntries">
+      <div style="font-size:13px;color:var(--muted);padding:8px 0;">Nothing logged yet today.</div>
     </div>
   </div>
 
-  <!-- ===================== WORKOUT PAGE ===================== -->
-  <div class="page active" id="page-workout">
-    <div class="day-nav" id="dayNav"></div>
-    <div id="workoutContent"></div>
+  <!-- Water Log -->
+  <div class="log-section">
+    <div class="log-section-header">
+      <h3><span class="log-icon">💧</span> Water</h3>
+      <button class="add-btn" onclick="addWater()">+ Glass</button>
+    </div>
+    <div class="water-tracker" id="waterTracker"></div>
+    <div class="water-count" id="waterCount">0 glasses today</div>
   </div>
 
-  <!-- ===================== LOG PAGE ===================== -->
-  <div class="page" id="page-log">
-
-    <!-- Food -->
-    <div class="log-section">
-      <div class="log-section-header">
-        <h3><span class="log-icon">🍽️</span> Food log</h3>
-        <button class="add-btn" onclick="openModal('food')">+ Add</button>
-      </div>
-      <div class="log-entries" id="foodEntries">
-        <div style="font-size:13px;color:var(--muted);padding:8px 0;">Nothing logged yet today.</div>
-      </div>
+  <!-- Walk log -->
+  <div class="log-section">
+    <div class="log-section-header">
+      <h3><span class="log-icon">🚶</span> Walk</h3>
+      <button class="add-btn" onclick="openModal('walk')">+ Log</button>
     </div>
-
-    <!-- Water -->
-    <div class="log-section">
-      <div class="log-section-header">
-        <h3><span class="log-icon">💧</span> Water</h3>
-        <button class="add-btn" onclick="addWater()">+ Glass</button>
-      </div>
-      <div class="water-tracker" id="waterTracker"></div>
-      <div class="water-count" id="waterCount">0 glasses today</div>
+    <div class="log-entries" id="walkEntries">
+      <div style="font-size:13px;color:var(--muted);padding:8px 0;">No walks logged today.</div>
     </div>
-
-    <!-- Walk -->
-    <div class="log-section">
-      <div class="log-section-header">
-        <h3><span class="log-icon">🚶</span> Walk</h3>
-        <button class="add-btn" onclick="openModal('walk')">+ Log</button>
-      </div>
-      <div class="log-entries" id="walkEntries">
-        <div style="font-size:13px;color:var(--muted);padding:8px 0;">No walks logged today.</div>
-      </div>
-    </div>
-
   </div>
+</div>
 
-  <!-- ===================== REMINDERS PAGE ===================== -->
-  <div class="page" id="page-reminders">
+<div class="page" id="page-reminders">
+  <div id="ntfySetup"></div>
 
-    <div id="ntfySetup"></div>
-
-    <p class="section-label">Today's schedule</p>
-    <div class="reminder-card">
-      <div class="reminder-row">
-        <div class="reminder-icon-box" style="background:rgba(255,179,71,0.15)">🍗</div>
-        <div class="reminder-info">
-          <div class="reminder-label">Protein meal</div>
-          <div class="reminder-sub">Lunch — high protein focus</div>
-        </div>
-        <div class="reminder-time">1:00 PM</div>
+  <p class="section-label">Today's schedule</p>
+  <div class="reminder-card">
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(255,179,71,0.15)">🍗</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Protein meal</div>
+        <div class="reminder-sub">Lunch — high protein focus</div>
       </div>
-      <div class="reminder-row">
-        <div class="reminder-icon-box" style="background:rgba(200,245,90,0.1)">🥜</div>
-        <div class="reminder-info">
-          <div class="reminder-label">Snack time</div>
-          <div class="reminder-sub">Keep it light</div>
-        </div>
-        <div class="reminder-time">3:00 PM</div>
-      </div>
-      <div class="reminder-row">
-        <div class="reminder-icon-box" style="background:rgba(107,197,255,0.12)">💧</div>
-        <div class="reminder-info">
-          <div class="reminder-label">Water reminders</div>
-          <div class="reminder-sub">Hourly, 9am – 8pm</div>
-        </div>
-        <div class="reminder-time">Hourly</div>
-      </div>
-      <div class="reminder-row">
-        <div class="reminder-icon-box" style="background:rgba(179,157,219,0.15)">🌅</div>
-        <div class="reminder-info">
-          <div class="reminder-label">Light dinner</div>
-          <div class="reminder-sub">Wind-down eating</div>
-        </div>
-        <div class="reminder-time">7:00 PM</div>
-      </div>
-      <div class="reminder-row">
-        <div class="reminder-icon-box" style="background:rgba(200,245,90,0.1)">🚶</div>
-        <div class="reminder-info">
-          <div class="reminder-label">Evening walk</div>
-          <div class="reminder-sub">After dinner walk</div>
-        </div>
-        <div class="reminder-time">8:00 PM</div>
-      </div>
+      <div class="reminder-time">1:00 PM</div>
     </div>
-
-    <div id="testNotifSection"></div>
-  </div>
-
-  <!-- ===================== BOTTOM NAV ===================== -->
-  <nav class="nav">
-    <button class="nav-btn active" onclick="showPage('workout')" id="nav-workout">
-      <span class="nav-icon">💪</span>Workout
-    </button>
-    <button class="nav-btn" onclick="showPage('log')" id="nav-log">
-      <span class="nav-icon">📋</span>Log
-    </button>
-    <button class="nav-btn" onclick="showPage('reminders')" id="nav-reminders">
-      <span class="nav-icon">🔔</span>Reminders
-    </button>
-  </nav>
-
-  <!-- ===================== MODAL ===================== -->
-  <div class="modal-overlay hidden" id="modalOverlay">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-title" id="modalTitle">Log food</div>
-      <input class="modal-input" id="modalInput" type="text" placeholder="e.g. Chicken & rice..." />
-      <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-primary" onclick="saveLog()">Save</button>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(200,245,90,0.1)">🥜</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Snack time</div>
+        <div class="reminder-sub">Keep it light</div>
       </div>
+      <div class="reminder-time">3:00 PM</div>
+    </div>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(107,197,255,0.12)">💧</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Water reminders</div>
+        <div class="reminder-sub">Hourly, 9am – 8pm</div>
+      </div>
+      <div class="reminder-time">Hourly</div>
+    </div>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(179,157,219,0.15)">🌅</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Light dinner</div>
+        <div class="reminder-sub">Wind-down eating</div>
+      </div>
+      <div class="reminder-time">7:00 PM</div>
+    </div>
+    <div class="reminder-row">
+      <div class="reminder-icon-box" style="background:rgba(200,245,90,0.1)">🚶</div>
+      <div class="reminder-info">
+        <div class="reminder-label">Evening walk</div>
+        <div class="reminder-sub">After dinner walk</div>
+      </div>
+      <div class="reminder-time">8:00 PM</div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <div id="testNotifSection"></div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('workout')" id="nav-workout">
+    <span class="nav-icon">💪</span>Workout
+  </button>
+  <button class="nav-btn" onclick="showPage('log')" id="nav-log">
+    <span class="nav-icon">📋</span>Log
+  </button>
+  <button class="nav-btn" onclick="showPage('reminders')" id="nav-reminders">
+    <span class="nav-icon">🔔</span>Reminders
+  </button>
+</nav>
+
+<!-- Modal -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">Log food</div>
+    <input class="modal-input" id="modalInput" type="text" placeholder="e.g. Chicken & rice..." />
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLog()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
