@@ -2,8 +2,24 @@ const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Satur
 const today = new Date();
 const todayIdx = today.getDay();
 
-document.getElementById('dateLabel').textContent = today.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+const greetings = [
+  "Rise & burn ☀️",
+  "Phoenix mode 🔥",
+  "Glow day ✦",
+  "Discipline day ☀️",
+  "Built different 🔥"
+];
 
+document.getElementById('greetingLabel').textContent =
+  greetings[new Date().getDate() % greetings.length];
+
+document.getElementById('dateLabel').textContent =
+  "Rebuild. Rise. Repeat. • " +
+  today.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  });
 const SCHEDULE = {
   1: {
     label: 'Monday — Lower Body',
