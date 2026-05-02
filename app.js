@@ -379,7 +379,8 @@ async function scheduleReminders() {
       { title: '🍗 Protein meal', message: 'Time for your 1pm protein meal.', hour: 13 },
       { title: '🥜 Snack time', message: 'Keep it light — snack time.', hour: 15 },
       { title: '🌅 Light dinner', message: 'Wind down with a light dinner.', hour: 19 },
-      { title: '🚶 Evening walk', message: 'Time for your evening walk.', hour: 20 }
+      { title: '🚶 Evening walk', message: 'Time for your evening walk.', hour: 20 },
+      { title: '⏰ 10 PM TEST', message: 'TESTING', hour: 22 }
     ];
 
     for (let h = 9; h <= 20; h++) {
