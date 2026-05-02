@@ -934,8 +934,24 @@ async function sendTestNotif() {
 
 let reminderIntervals = [];
 
+function getDelayUntil(hour, minute = 0) {
+  const now = new Date();
+  const target = new Date();
+
+  target.setHours(hour, minute, 0, 0);
+
+  if (target <= now) {
+    return null; // skip times that already passed
+  }
+
+  const diffMs = target - now;
+  const diffMinutes = Math.ceil(diffMs / 60000);
+
+  return diffMinutes + 'm';
+}
+
 async function sendScheduledNotif(title, message, delay) {
-  if (!ntfyTopic) return;
+  if (!ntfyTopic || !delay) return;
 
   const url =
     `https://ntfy.sh/${ntfyTopic}` +
@@ -954,18 +970,41 @@ async function sendScheduledNotif(title, message, delay) {
 
 async function scheduleReminders() {
   try {
-    await sendScheduledNotif('🍗 Protein meal', 'Time for your 1pm protein meal.', '1pm');
-    await sendScheduledNotif('🥜 Snack time', 'Keep it light — snack time.', '3pm');
-    await sendScheduledNotif('🌅 Light dinner', 'Wind down with a light dinner.', '7pm');
-    await sendScheduledNotif('🚶 Evening walk', 'Time for your evening walk.', '8pm');
-    // check
-    await sendScheduledNotif('TEST 2', 'Should arrive in 2 min', '2m');
+    const todayScheduledKey = 'remindersScheduled-' + todayKey;
 
-    for (let h = 9; h <= 19; h++) {
-      await sendScheduledNotif('💧 Drink water', 'Hydration check — sip some water.', `${h}:00`);
+    if (localStorage.getItem(todayScheduledKey) === 'yes') {
+      alert('Reminders are already scheduled for today.');
+      return;
     }
 
-    alert('Reminders scheduled with ntfy! You can close the app now.');
+    const reminders = [
+      { title: '🍗 Protein meal', message: 'Time for your 1pm protein meal.', hour: 13 },
+      { title: '🥜 Snack time', message: 'Keep it light — snack time.', hour: 15 },
+      { title: '🌅 Light dinner', message: 'Wind down with a light dinner.', hour: 19 },
+      { title: '🚶 Evening walk', message: 'Time for your evening walk.', hour: 20 }
+    ];
+
+    for (let h = 9; h <= 20; h++) {
+      reminders.push({
+        title: '💧 Drink water',
+        message: 'Hydration check — sip some water.',
+        hour: h
+      });
+    }
+
+    let scheduledCount = 0;
+
+    for (const r of reminders) {
+      const delay = getDelayUntil(r.hour, 0);
+
+      if (delay) {
+        await sendScheduledNotif(r.title, r.message, delay);
+        scheduledCount++;
+      }
+    }
+
+    localStorage.setItem(todayScheduledKey, 'yes');
+    alert(`${scheduledCount} reminders scheduled for today. You can close the app now.`);
   } catch (err) {
     alert('Could not schedule reminders: ' + err.message);
     console.log(err);
