@@ -22,70 +22,76 @@ document.getElementById('dateLabel').textContent =
   });
 const SCHEDULE = {
   1: {
-    label: 'Monday — Lower Body',
+    label: 'Monday — Lower + Run Finisher',
     color: '#ff6b6b',
-    time: '7 AM (fasted)',
+    time: '7 AM',
     sections: [
-      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups','Pull-ups'] },
-      { name: 'Main', exercises: ['Barbell hip thrust','RDL','Bulgarian split squat','Hip abductor'] },
-      { name: 'Core (belly focus)', exercises: ['Hanging leg raises','Cable crunch'] },
-      { name: 'Arms (light)', exercises: ['Tricep pushdowns or kickbacks','Lateral raises'] }
+      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups', 'Pull-ups'] },
+      { name: 'Lower body', exercises: ['Barbell hip thrust', 'Weighted squats', 'DB walking lunges', 'Hip abductor + adductor'] },
+      { name: 'Run finisher', exercises: ['1 km run'] }
     ]
   },
+
   2: {
-    label: 'Tuesday — Cardio + Core',
+    label: 'Tuesday — Interval Run + Abs',
     color: '#ffcc44',
     time: 'Flexible',
     sections: [
-      { name: 'Cardio (pick one)', exercises: ['20–25 min run (easy pace)','Incline walking'] },
-      { name: 'Core circuit', exercises: ['Hanging leg raises','Plank','Cable crunch'] }
+      { name: 'Intervals', exercises: ['1 min fast / 2 min walk × 8–10 rounds'] },
+      { name: 'Abs routine', exercises: ['Russian twists', 'In and outs', 'Heel touches', 'Knee/tabletop crunches', '1 min plank'] }
     ]
   },
+
   3: {
-    label: 'Wednesday — Upper Body',
+    label: 'Wednesday — Arms + Full Body + Run',
     color: '#6bc5ff',
     time: '7 AM',
     sections: [
-      { name: 'Start', exercises: ['BOSU leg-ups','Pull-ups'] },
-      { name: 'Back + Push', exercises: ['Lat pulldown','Chest-supported DB row','Incline DB press','Single-arm lat row'] },
-      { name: '🔥 Arms (main focus)', exercises: ['Preacher curl','Tricep kickbacks','Overhead tricep extension','Lateral raises'] },
-      { name: 'Finish', exercises: ['Dead hang'] }
+      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups', 'Pull-ups'] },
+      { name: 'Back + upper body', exercises: ['Lat pulldown', 'Chest-supported DB row', 'Overhead tricep extension'] },
+      { name: 'Arms + shoulders', exercises: ['Lateral raises', 'Front raises', 'Seesaw press', 'Shoulder circles'] },
+      { name: 'Run finisher', exercises: ['1 km run'] }
     ]
   },
+
   4: {
-    label: 'Thursday — Fat Loss Day',
+    label: 'Thursday — Longer Run / Bike',
     color: '#c8f55a',
     time: 'Flexible',
     sections: [
-      { name: 'Intervals (pick one)', exercises: ['1 min fast / 2 min walk × 6–8 rounds','30–40 min incline walk'] }
+      { name: 'Cardio', exercises: ['30–45 min steady run OR bike'] },
+      { name: 'Optional abs', exercises: ['Russian twists', 'Heel touches', 'Plank'] }
     ]
   },
+
   5: {
-    label: 'Friday — Lower Body (Quads)',
+    label: 'Friday — Glutes + Legs + Abs',
     color: '#b39ddb',
     time: '7 AM',
     sections: [
-      { name: 'Start', exercises: ['BOSU leg-ups','Pull-ups'] },
-      { name: 'Main', exercises: ['Hack squat','DB walking lunges','Hip thrust','Leg extension','Hip adductor'] },
-      { name: 'Core', exercises: ['Cable crunch','Hanging leg raises'] },
-      { name: 'Arms (light)', exercises: ['Tricep pushdowns','Lateral raises'] }
+      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups', 'Pull-ups'] },
+      { name: 'Glutes + legs', exercises: ['Barbell hip thrust', 'DB walking lunges', 'Leg extension', 'Hip abductor', 'Hip adductor'] },
+      { name: 'Core', exercises: ['Russian twists', 'In and outs'] },
+      { name: 'Finisher', exercises: ['1 km run OR 15–20 min incline walk'] }
     ]
   },
+
   6: {
-    label: 'Saturday — Active + Pilates',
+    label: 'Saturday — Long Run / Pilates / Active',
     color: '#ffb347',
     time: 'Flexible',
     sections: [
-      { name: 'Activity', exercises: ['Long walk','Light run','Pilates / YouTube workout (optional)'] }
+      { name: 'Activity', exercises: ['Long run', 'Bike ride', 'Pilates / YouTube workout', 'Long walk'] }
     ]
   },
+
   0: {
     label: 'Sunday — Rest & Reset',
     color: '#888',
     time: 'All day',
     rest: true,
     sections: [
-      { name: 'Gentle movement', exercises: ['Walk','Stretch'] }
+      { name: 'Gentle movement', exercises: ['Walk', 'Stretch'] }
     ]
   }
 };
