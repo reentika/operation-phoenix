@@ -22,71 +22,79 @@ document.getElementById('dateLabel').textContent =
   });
 const SCHEDULE = {
   1: {
-    label: 'Monday — Lower + Run Finisher',
+    label: 'Easy Treadmill + Lower Body',
     color: '#ff6b6b',
-    time: '7 AM',
+    time: 'After Work',
+    location: 'Gym',
     sections: [
-      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups', 'Pull-ups'] },
-      { name: 'Lower body', exercises: ['Barbell hip thrust', 'Weighted squats', 'DB walking lunges', 'Hip abductor + adductor'] },
-      { name: 'Run finisher', exercises: ['1 km run'] }
+      { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
+      { name: 'Run', exercises: ['3-5 km easy run'] },
+      { name: 'Intermediate Area', exercises: ['Goblet Squats', 'RDLs', 'Leg raises'] },
+      { name: 'Normal Area', exercises: ['Assisted Pull-ups', 'Assisted Hip Dips'] }
     ]
   },
 
   2: {
-    label: 'Tuesday — Interval Run + Abs',
+    label: 'Intervals + Core',
     color: '#ffcc44',
-    time: 'Flexible',
+    time: 'After Work',
+    location: 'Gym',
     sections: [
-      { name: 'Intervals', exercises: ['1 min fast / 2 min walk × 8–10 rounds'] },
+      { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
+      { name: 'Run', exercises: ['Garmin built-in 400m'] },
       { name: 'Abs routine', exercises: ['Russian twists', 'In and outs', 'Heel touches', 'Knee/tabletop crunches', '1 min plank'] }
     ]
   },
 
   3: {
-    label: 'Wednesday — Arms + Full Body + Run',
+    label: 'Upper Body',
     color: '#6bc5ff',
-    time: '7 AM',
+    time: 'After Work',
+    location: 'Gym',
     sections: [
-      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups', 'Pull-ups'] },
-      { name: 'Back + upper body', exercises: ['Lat pulldown', 'Chest-supported DB row', 'Overhead tricep extension'] },
-      { name: 'Arms + shoulders', exercises: ['Lateral raises', 'Front raises', 'Seesaw press', 'Shoulder circles'] },
-      { name: 'Run finisher', exercises: ['1 km run'] }
+      { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
+      { name: 'Intermediate Area', exercises: ['Dumbell Shoulder Press', 'Face pulls', 'Overhead tricep extension', 'Lateral raises', 'Tricep Pushdown', 'Lat pulldown'] },
+      { name: 'Normal Area', exercises: ['Assisted Pull-ups', 'Chest-supported row'] }, 
+      { name: 'Optional', exercises: ['15 min bike'] }
     ]
   },
 
   4: {
-    label: 'Thursday — Longer Run / Bike',
+    label: 'Recovery Run',
     color: '#c8f55a',
     time: 'Flexible',
+    location: 'Outdoors / Gym',
     sections: [
-      { name: 'Cardio', exercises: ['30–45 min steady run OR bike'] },
-      { name: 'Optional abs', exercises: ['Russian twists', 'Heel touches', 'Plank'] }
+      { name: 'Cardio', exercises: ['4-6 km easy run'] },
+      { name: 'Stretch', exercises: ['5-10 min static stretches'] }
     ]
   },
 
   5: {
-    label: 'Friday — Glutes + Legs + Abs',
+    label: 'Leg Strength',
     color: '#b39ddb',
-    time: '7 AM',
+    time: 'Flexible',
+    location: 'Gym',
     sections: [
-      { name: 'Start (non-negotiables)', exercises: ['BOSU leg-ups', 'Pull-ups'] },
-      { name: 'Glutes + legs', exercises: ['Barbell hip thrust', 'DB walking lunges', 'Leg extension', 'Hip abductor', 'Hip adductor'] },
-      { name: 'Core', exercises: ['Russian twists', 'In and outs'] },
+      { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
+      { name: 'Intermediate Area', exercises: ['Goblet Squats', 'RDLs', 'Leg raises', 'Calf raises'] },
+      { name: 'Normal Area', exercises: ['Dead hang', 'Leg curls', 'Hip abductors', 'Hip adductors'] },
       { name: 'Finisher', exercises: ['1 km run OR 15–20 min incline walk'] }
     ]
   },
 
   6: {
-    label: 'Saturday — Long Run / Pilates / Active',
+    label: 'Long Run',
     color: '#ffb347',
     time: 'Flexible',
+    location: 'Anywhere',
     sections: [
-      { name: 'Activity', exercises: ['Long run', 'Bike ride', 'Pilates / YouTube workout', 'Long walk'] }
+      { name: 'Long Run', exercises: ['5km'] }
     ]
   },
 
   0: {
-    label: 'Sunday — Rest & Reset',
+    label: 'Recovery & Rest',
     color: '#888',
     time: 'All day',
     rest: true,
