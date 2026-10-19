@@ -22,85 +22,84 @@ document.getElementById('dateLabel').textContent =
   });
 const SCHEDULE = {
   1: {
-    label: 'Easy Treadmill + Lower Body',
-    color: '#ff6b6b',
-    time: 'After Work',
-    location: 'Gym',
-    sections: [
-      { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
-      { name: 'Run', exercises: ['3-5 km easy run'] },
-      { name: 'Intermediate Area', exercises: ['Goblet Squats', 'RDLs', 'Leg raises'] },
-      { name: 'Normal Area', exercises: ['Assisted Pull-ups', 'Assisted Hip Dips'] }
-    ]
-  },
-
-  2: {
-    label: 'Intervals + Core',
+    label: 'Full Body A',
     color: '#ffcc44',
     time: 'After Work',
     location: 'Gym',
     sections: [
       { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
-      { name: 'Run', exercises: ['Garmin built-in 400m'] },
-      { name: 'Abs routine', exercises: ['Russian twists', 'In and outs', 'Heel touches', 'Knee/tabletop crunches', '1 min plank'] }
+      { name: 'Lower', exercises: ['RDL', 'Squats'] },
+      { name: 'Upper', exercises: ['Pull ups', 'Chest press'] },
+      { name: 'Abs', exercises: ['Sit ups', 'Plank'] }
     ]
   },
 
-  3: {
-    label: 'Upper Body',
-    color: '#6bc5ff',
+  2: {
+    label: 'Intervals + Light Mobility',
+    color: '#ffcc44',
     time: 'After Work',
     location: 'Gym',
     sections: [
       { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
-      { name: 'Intermediate Area', exercises: ['Dumbell Shoulder Press', 'Face pulls', 'Overhead tricep extension', 'Lateral raises', 'Tricep Pushdown', 'Lat pulldown'] },
-      { name: 'Normal Area', exercises: ['Assisted Pull-ups', 'Chest-supported row'] }, 
-      { name: 'Optional', exercises: ['15 min bike'] }
+      { name: 'Run', exercises: ['Garmin built-in 400m Intervals'] },
+      { name: 'Cool down/Stretches', exercises: ['Sun Salutation', 'Dead Hang'] }
+    ]
+  },
+
+  3: {
+    label: 'Full Body B',
+    color: '#6bc5ff',
+    time: 'After Work',
+    location: 'Gym',
+    sections: [
+      { name: 'Warm-up', exercises: ['10-20 min incline walk'] },
+      { name: 'Lower', exercises: ['Leg curl', 'Leg Press'] },
+      { name: 'Upper', exercises: ['Lat pulldown', 'Shoulder Press'] },
+      { name: 'Core', exercises: ['Bosu', 'Plank'] }
     ]
   },
 
   4: {
-    label: 'Recovery Run',
+    label: 'Run + Full Body C',
     color: '#c8f55a',
     time: 'Flexible',
     location: 'Outdoors / Gym',
     sections: [
-      { name: 'Cardio', exercises: ['4-6 km easy run'] },
-      { name: 'Stretch', exercises: ['5-10 min static stretches'] }
+      { name: 'Run', exercises: ['Easy Pace'] },
+      { name: 'Lower', exercises: ['Abductor', 'Adductor'] },
+      { name: 'Upper', exercises: ['Chest Supported Row', 'Chest Press'] },
+      { name: 'Core', exercises: ['Fun Machine Torso', 'Plank'] }
     ]
   },
 
   5: {
-    label: 'Leg Strength',
+    label: 'Long Run',
     color: '#b39ddb',
     time: 'Flexible',
-    location: 'Gym',
+    location: 'Outdoors',
     sections: [
-      { name: 'Warm-up', exercises: ['5-10 min incline walk'] },
-      { name: 'Intermediate Area', exercises: ['Goblet Squats', 'RDLs', 'Leg raises', 'Calf raises'] },
-      { name: 'Normal Area', exercises: ['Dead hang', 'Leg curls', 'Hip abductors', 'Hip adductors'] },
-      { name: 'Finisher', exercises: ['1 km run OR 15–20 min incline walk'] }
+      { name: 'Run', exercises: ['5km+'] }
     ]
   },
 
   6: {
-    label: 'Long Run',
-    color: '#ffb347',
+    label: 'Extras',
+    color: '#a4b792',
     time: 'Flexible',
-    location: 'Anywhere',
+    location: 'Optional Gym / Home',
     sections: [
-      { name: 'Long Run', exercises: ['5km'] }
+      { name: 'Extra Lower (Optional)', exercises: ['Hip Thrust'] },
+      { name: 'Extra Upper (Optional)', exercises: ['Tricep Pushdown', 'Face Pulls', 'Lat Raises'] }
     ]
   },
 
   0: {
-    label: 'Recovery & Rest',
-    color: '#888',
-    time: 'All day',
+    label: 'Rest / Chill — Weekend Off',
+    color: '#a4b792',
+    time: 'Enjoy your weekend',
+    location: 'Rest day',
     rest: true,
-    sections: [
-      { name: 'Gentle movement', exercises: ['Walk', 'Stretch'] }
-    ]
+    sections: []
   }
 };
 
@@ -138,16 +137,18 @@ function renderWorkout() {
     <div class="day-dot" style="background:${day.color}"></div>
     <div>
       <div class="day-title">${day.label.split('—')[1]?.trim() || day.label}</div>
-      <div class="day-subtitle">⏰ ${day.time}</div>
+      <div class="day-subtitle">⏰ ${day.time} · 📍 ${day.location}</div>
     </div>
   </div>`;
 
   if (day.rest) {
     html += `<div class="rest-card">
       <div class="rest-emoji">🌿</div>
-      <h2>Rest & Reset</h2>
-      <p>Walk + stretch. Recovery is part of the process.</p>
+      <h2>Rest & Chill</h2>
+      <p>Weekend off — relax, recharge, and enjoy your day.</p>
     </div>`;
+    content.innerHTML = html;
+    return;
   }
 
   const dayKey = `${todayKey}-${currentDay}`;
